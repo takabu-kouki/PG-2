@@ -4,20 +4,20 @@
 #include "Enemy.h"
 #include <corecrt_math.h>
 
-bool isBulletColliding(Bullet& bullet, Enemy& enemy) {
-	int dx = bullet.bulletGetX() - enemy.enemyGetPosX();
-	int dy = bullet.bulletGetY() - enemy.enemyGetPosY();
-	int distance = (int)sqrt(dx * dx + dy * dy);
+bool isBulletAT(Bullet& bullet, Enemy& enemy) {
+	int atX = bullet.bulletGetPosX() - enemy.enemyGetPosX();
+	int atY = bullet.bulletGetPosY() - enemy.enemyGetPosY();
+	int BulletDistance = (int)sqrt(atX * atX + atY * atY);
 
-	return distance < 50;
+	return BulletDistance < 50;
 }
 
 bool isPlayerColliding(Player& player, Enemy& enemy) {
-	int dx = player.playerGetPosX() - enemy.enemyGetPosX();
-	int dy = player.playerGetPosY() - enemy.enemyGetPosY();
-	int distance = (int)sqrt(dx * dx + dy * dy);
+	int atX = player.playerGetPosX() - enemy.enemyGetPosX();
+	int atY = player.playerGetPosY() - enemy.enemyGetPosY();
+	int playerDistance = (int)sqrt(atX * atX + atY * atY);
 
-	return distance < 50;
+	return playerDistance < 50;
 }
 
 enum Scene
@@ -92,7 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			bullet->shot(keys, preKeys, player->playerGetPosX(), player->playerGetPosY());
 
-			if (isBulletColliding(*bullet, *enemy)) {
+			if (isBulletAT(*bullet, *enemy)) {
 				//Scene = clear;
 				gameOver = true;
 				
