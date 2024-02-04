@@ -5,8 +5,8 @@
 #include <corecrt_math.h>
 
 bool isBulletColliding(Bullet& bullet, Enemy& enemy) {
-	int dx = bullet.bulletGetPosX() - enemy.enemyGetPosX();
-	int dy = bullet.bulletGetPosY() - enemy.enemyGetPosY();
+	int dx = bullet.bulletGetX() - enemy.enemyGetPosX();
+	int dy = bullet.bulletGetY() - enemy.enemyGetPosY();
 	int distance = (int)sqrt(dx * dx + dy * dy);
 
 	return distance < 50;
@@ -22,15 +22,15 @@ bool isPlayerColliding(Player& player, Enemy& enemy) {
 
 enum Scene
 {
-	TITLE,
-	GAME,
-	CLEAR,
-	OVER,
+	title = 0,
+	game = 1,
+	clear = 2,
+	over = 3,
 };
 
-int Scene = TITLE;
+int Scene = title;
 
-const char kWindowTitle[] = "GC1D_07_タカブ_コウキ_タイトル";
+const char kWindowTitle[] = "GC1D_07_タカブ_コウキ_shooting_Gun";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -43,12 +43,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int titleImges = Novice::LoadTexture("./title.png");//タイトル
 	int gameImges = Novice::LoadTexture("./game.png");//ゲーム
-	int clearImges = Novice::LoadTexture("./clear.png");//クリア
+	int clearImges = Novice::LoadTexture("./CLEAR.png");//クリア
 	int overImges = Novice::LoadTexture("./over.png");//オーバー
 
 	Player* player = new Player;
 	Enemy* enemy = new Enemy;;
 	Bullet* bullet = new Bullet;
+	bool gameOver = false;
+	int timer = 50;
+	//Enemy* enemy = new Enemy();
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -69,49 +72,61 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (Scene) {
 
-		case TITLE:
+		case title:
 
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE])
 			{
-				Scene = GAME;
+				Scene = game;
 				player->Initalize();
 				bullet->Initalize();
 			}
 
 			break;
 
-		case GAME:
+		case game:
 
 			player->move(keys);
+			
+
 			enemy->move();
+			
 			bullet->shot(keys, preKeys, player->playerGetPosX(), player->playerGetPosY());
 
 			if (isBulletColliding(*bullet, *enemy)) {
-				Scene = CLEAR;
+				//Scene = clear;
+				gameOver = true;
+				
 				bullet->Initalize();
 			}
-
+			if (gameOver == true) {
+				timer--;
+			}
+			if (timer <= 0) {
+				gameOver = false;
+				timer = 50;
+			}
 			if (isPlayerColliding(*player, *enemy)) {
-				Scene = OVER;
+				Scene = over;
+
 				bullet->Initalize();
 			}
 
 			break;
 
-		case CLEAR:
+		case clear:
 
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE])
 			{
-				Scene = TITLE;
+				Scene = title;
 			}
 
 			break;
 
-		case OVER:
+		case over:
 
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE])
 			{
-				Scene = TITLE;
+				Scene = title;
 			}
 
 			break;
@@ -124,33 +139,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 
+		Novice::ScreenPrintf(0, 180, "timer=%d", timer);
+		Novice::ScreenPrintf(0, 300, "gameOver=%d", gameOver);
 
 		switch (Scene) {
 
-		case TITLE:
+		case title:
 
 			Novice::DrawSprite(0, 0, titleImges, 1, 1, 0.0f, WHITE);
 
 			break;
 
-		case GAME:
+		case game:
 
 
 			Novice::DrawSprite(0, 0, gameImges, 1, 1, 0.0f, WHITE);
 
 			player->Drow();
-			enemy->Drow();
+			if (gameOver == false) {
+				enemy->Drow();
+			}
 			bullet->Drow();
 
 			break;
 
-		case CLEAR:
+		case clear:
 
 			Novice::DrawSprite(0, 0, clearImges, 1, 1, 0.0f, WHITE);
 
 			break;
 
-		case OVER:
+		case over:
 
 			Novice::DrawSprite(0, 0, overImges, 1, 1, 0.0f, WHITE);
 

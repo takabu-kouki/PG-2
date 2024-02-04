@@ -23,7 +23,7 @@ void Bullet::Initalize()
 
 void Bullet::Drow()
 {
-	Novice::DrawEllipse(bulletGetPosX(), bulletGetPosY(), 20, 20, 0.0f, WHITE, kFillModeSolid);
+	Novice::DrawEllipse(bulletGetX(), bulletGetY(), 20, 20, 0.0f, WHITE, kFillModeSolid);
 }
 
 void Bullet::shot(char keys[], char preKeys[], int x, int y)

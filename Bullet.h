@@ -15,8 +15,8 @@ public:
 
 	void Initalize();
 
-	int bulletGetPosX() const { return bulletPosX; }
-	int bulletGetPosY() const { return bulletPosY; }
+	int bulletGetX() const { return bulletPosX; }
+	int bulletGetY() const { return bulletPosY; }
 
 	void Drow();
 	void shot(char keys[], char preKeys[], int x, int y);

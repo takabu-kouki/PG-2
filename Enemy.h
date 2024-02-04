@@ -1,14 +1,16 @@
 #pragma once
-#include "Novice.h"
-
+#include <Novice.h>
+#include "Player.h"
+#include "Bullet.h"
+#include "Enemy.h"
 class Enemy
 {
 private:
 	int enemyPosX;
 	int enemyPosY;
 	int enemySpeed;
-	int timer = 30;
-
+	int gameOver = 0;
+	int timer = 20;
 public:
 	Enemy();
 
